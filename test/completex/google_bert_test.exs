@@ -4,9 +4,9 @@ defmodule Completex.GoogleBertTest do
 
   alias Completex.ChatCompletion.GoogleBert
 
-  describe "should translate something" do
+  describe "google bert model" do
     @tag timeout: :infinity
-    test "translate" do
+    test "should fill a sentence" do
       name = :test
       GoogleBert.start_link(name: name)
 
