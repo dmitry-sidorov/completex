@@ -49,7 +49,11 @@ defmodule Completex.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+
+      # custom deps for LLM
+      {:bumblebee, "~> 0.5.3"},
+      {:exla, ">= 0.0.0"}
     ]
   end
 
