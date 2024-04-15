@@ -5,7 +5,7 @@ defmodule Completex.ChatCompletion.Stub do
   @behaviour Translatex.ChatCompletion
 
   @impl Translatex.ChatCompletion
-  def call(request, _opts) do
+  def call(request, opts \\ []) do
     "Hi, I am Stub. Your request echo: #{request}"
   end
 end

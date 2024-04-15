@@ -18,6 +18,13 @@ defmodule CompletexWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/chat", ChatsLive.Index, :index
+  end
+
+  scope "/api", CompletexWeb do
+    pipe_through :api
+
+    post "/chat", ChatController, :stream
   end
 
   # Other scopes may use custom stacks.
