@@ -1,0 +1,27 @@
+<div class="h-full w-full max-w-3xl flex flex-col mx-auto bg-gray-50 drop-shadow text-gray-700">
+  <ol class="grow flex flex-col-reverse overflow-y-auto">
+    <li :for={message <- @messages}><%= message.content %></li>
+    <li class="h-full hidden only:flex items-center justify-center">
+      Enter your message and mark place to fill with square brackets [FILL].
+    </li>
+  </ol>
+  <div class="shrink-0 w-full">
+    <form phx-submit="submit" class="border-t border-gray-200 p-4 space-y-2">
+      <textarea
+        name="content"
+        class="block resize-none w-full border-gray-200 rounded bg-white focus:ring-0 focus:border-gray-300 focus:shadow-sm"
+        placeholder="Enter a message..."
+        rows={4}
+      >
+      </textarea>
+      <div class="flex justify-end">
+        <button
+          disabled={@running}
+          class="bg-gray-200 hover:bg-gray-300 transition px-3 py-1.5 rounded flex items-center justify-center"
+        >
+          Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
