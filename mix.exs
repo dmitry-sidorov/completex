@@ -53,8 +53,7 @@ defmodule Completex.MixProject do
 
       # custom deps for LLM
       {:bumblebee, "~> 0.5.3"},
-      {:exla, ">= 0.0.0"},
-      {:kino, "~> 0.10.0"}
+      {:exla, ">= 0.0.0"}
     ]
   end
 
