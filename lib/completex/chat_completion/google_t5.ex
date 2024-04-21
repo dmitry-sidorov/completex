@@ -34,6 +34,7 @@ defmodule Completex.ChatCompletion.GoogleT5 do
 
   @impl GenServer
   def handle_call({:serve, prompt}, _from, %{serving: serving} = state) do
+    prompt
     {:reply, Nx.Serving.run(serving, prompt) |> Enum.to_list(), state}
   end
 
@@ -41,7 +42,13 @@ defmodule Completex.ChatCompletion.GoogleT5 do
 
   @impl Completex.ChatCompletion
   def call(request, opts) do
+    {callback, opts} = Keyword.pop(opts, :callback)
     {name, _opts} = Keyword.pop(opts, :name, __MODULE__)
-    GenServer.call(name, {:serve, request}, :infinity)
+    response = GenServer.call(name, {:serve, request}, :infinity) |> dbg()
+
+    case callback do
+      f when is_function(f, 1) -> f.(response)
+      _ -> response
+    end
   end
 end

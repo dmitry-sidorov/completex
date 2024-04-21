@@ -1,4 +1,4 @@
-defmodule Completex.GoogleBertTest do
+defmodule Completex.GoogleT5Test do
   @moduledoc false
   use ExUnit.Case
 

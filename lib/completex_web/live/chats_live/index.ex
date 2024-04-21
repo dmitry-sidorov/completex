@@ -1,5 +1,6 @@
 defmodule CompletexWeb.ChatsLive.Index do
   use CompletexWeb, :live_view
+  alias Completex.ChatCompletion.GoogleT5
 
   @impl true
   def mount(_params, _session, socket) do
@@ -15,7 +16,7 @@ defmodule CompletexWeb.ChatsLive.Index do
   def handle_event("submit", %{"content" => content}, socket) do
     message = %{role: :user, content: content}
     messages = [message | socket.assigns.messages]
-    pid = self()
+    pid = self() |> dbg()
 
     socket =
       socket
@@ -24,6 +25,7 @@ defmodule CompletexWeb.ChatsLive.Index do
       |> start_async(:chat_completion, fn ->
         run_chat_completion(pid, Enum.reverse(messages))
       end)
+      |> dbg()
 
     {:noreply, socket}
   end
@@ -47,16 +49,34 @@ defmodule CompletexWeb.ChatsLive.Index do
     {:noreply, assign(socket, :runnning, false)}
   end
 
-  defp run_chat_completion(pid, messages) do
-    request = %{messages: messages}
+  @imlp true
+  def handle_call({:serve, message}, _from, state) do
+    {:reply, message, state} |> dbg()
+  end
 
-    Completex.ChatCompletion.GoogleBert.call(request,
-      callback: fn chunk ->
-        case chunk do
-          content when is_binary(content) -> send(pid, {:chunk, content}) |> dbg()
-          _ -> nil
+  defp run_chat_completion(pid, messages) do
+    {:ok, model_pid} = GoogleT5.start_link()
+
+    messages |> dbg()
+    [%{content: content, role: :user}] = messages
+
+    # [results: [%{text: result, token_summary: _}]] =
+    result =
+      Completex.ChatCompletion.call(
+        content,
+        engine: GoogleT5,
+        name: model_pid,
+        callback: fn chunk ->
+          case chunk do
+            [results: [%{text: content, token_summary: _}]] -> send(pid, {:chunk, content})
+            _ -> nil
+          end
+
+          Process.exit(model_pid, :normal)
         end
-      end
-    )
+      )
+      |> dbg()
+
+    result
   end
 end
