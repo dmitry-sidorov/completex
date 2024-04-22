@@ -5,7 +5,6 @@ defmodule Completex.ChatCompletion.GoogleT5 do
   """
   use GenServer
 
-  @spec start_link(keyword()) :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link(opts \\ []) do
     {name, opts} = opts |> Keyword.put_new(:name, __MODULE__) |> Keyword.pop!(:name)
     GenServer.start_link(__MODULE__, opts, name: name)
@@ -34,7 +33,6 @@ defmodule Completex.ChatCompletion.GoogleT5 do
 
   @impl GenServer
   def handle_call({:serve, prompt}, _from, %{serving: serving} = state) do
-    prompt
     {:reply, Nx.Serving.run(serving, prompt) |> Enum.to_list(), state}
   end
 

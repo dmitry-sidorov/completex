@@ -17,9 +17,8 @@ defmodule Completex.Application do
       # Start Finch
       {Finch, name: Completex.Finch},
       # Start the Endpoint (http/https)
-      CompletexWeb.Endpoint
-      # Start a worker by calling: Completex.Worker.start_link(arg)
-      # {Completex.Worker, arg}
+      CompletexWeb.Endpoint,
+      Completex.ChatCompletion.GoogleT5
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

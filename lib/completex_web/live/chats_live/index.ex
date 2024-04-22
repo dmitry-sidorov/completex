@@ -55,8 +55,6 @@ defmodule CompletexWeb.ChatsLive.Index do
   end
 
   defp run_chat_completion(pid, messages) do
-    {:ok, model_pid} = GoogleT5.start_link()
-
     messages |> dbg()
     [%{content: content, role: :user}] = messages
 
@@ -65,14 +63,12 @@ defmodule CompletexWeb.ChatsLive.Index do
       Completex.ChatCompletion.call(
         content,
         engine: GoogleT5,
-        name: model_pid,
+        name: GoogleT5,
         callback: fn chunk ->
           case chunk do
             [results: [%{text: content, token_summary: _}]] -> send(pid, {:chunk, content})
             _ -> nil
           end
-
-          Process.exit(model_pid, :normal)
         end
       )
       |> dbg()
