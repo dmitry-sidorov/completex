@@ -42,10 +42,10 @@ defmodule Completex.ChatCompletion.GoogleT5 do
   def call(request, opts) do
     {callback, opts} = Keyword.pop(opts, :callback)
     {name, _opts} = Keyword.pop(opts, :name, __MODULE__)
-    response = GenServer.call(name, {:serve, request}, :infinity) |> dbg()
+    response = GenServer.call(name, {:serve, request}, :infinity)
 
     case callback do
-      f when is_function(f, 1) -> f.(response) |> dbg()
+      f when is_function(f, 1) -> f.(response)
       _ -> response
     end
   end
