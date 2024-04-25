@@ -45,7 +45,7 @@ defmodule Completex.ChatCompletion.GoogleT5 do
     response = GenServer.call(name, {:serve, request}, :infinity) |> dbg()
 
     case callback do
-      f when is_function(f, 1) -> f.(response)
+      f when is_function(f, 1) -> f.(response) |> dbg()
       _ -> response
     end
   end

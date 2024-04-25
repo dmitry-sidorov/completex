@@ -14,9 +14,11 @@ defmodule CompletexWeb.ChatsLive.Index do
 
   @impl true
   def handle_event("submit", %{"content" => content}, socket) do
+    IO.inspect(content, label: "SUBMIT BUTTON PRESSED")
     message = %{role: :user, content: content}
+    # |> dbg()
     messages = [message | socket.assigns.messages]
-    pid = self() |> dbg()
+    pid = self()
 
     socket =
       socket
@@ -25,27 +27,30 @@ defmodule CompletexWeb.ChatsLive.Index do
       |> start_async(:chat_completion, fn ->
         run_chat_completion(pid, Enum.reverse(messages))
       end)
-      |> dbg()
+
+    # |> dbg()
 
     {:noreply, socket}
   end
 
   @impl true
   def handle_info({:chunk, chunk}, socket) do
-    messages =
-      case socket.assigns.messages do
-        [%{role: :assistant, content: content} | messages] ->
-          [%{role: :assistant, content: content <> chunk} | messages]
+    # messages =
+    #   case socket.assigns.messages do
+    #     [%{role: :assistant, content: content} | messages] ->
+    #       [%{role: :assistant, content: content <> chunk} | messages]
 
-        messages ->
-          [%{role: :assistant, content: chunk} | messages]
-      end
+    #     messages ->
+    #       [%{role: :assistant, content: chunk} | messages]
+    #   end
+    messages = [%{role: :assistant, content: chunk}]
 
     {:noreply, assign(socket, :messages, messages)}
   end
 
   @impl true
   def handle_async(:chat_completion, _result, socket) do
+    IO.inspect("RUN :chat_completion clause")
     {:noreply, assign(socket, :runnning, false)}
   end
 
@@ -66,12 +71,17 @@ defmodule CompletexWeb.ChatsLive.Index do
         name: GoogleT5,
         callback: fn chunk ->
           case chunk do
-            [results: [%{text: content, token_summary: _}]] -> send(pid, {:chunk, content})
-            _ -> nil
+            [results: [%{text: content, token_summary: _}]] ->
+              send(pid, {:chunk, content}) |> dbg()
+              send(pid, {:chunk, content})
+
+            _ ->
+              nil
           end
         end
       )
-      |> dbg()
+
+    # |> dbg()
 
     result
   end
