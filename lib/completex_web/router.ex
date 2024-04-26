@@ -21,10 +21,6 @@ defmodule CompletexWeb.Router do
     live "/chat", ChatsLive.Index, :index
   end
 
-  scope "/", CompletexWeb do
-    get "/chat_kino", ChatController, :index
-  end
-
   scope "/api", CompletexWeb do
     pipe_through :api
 

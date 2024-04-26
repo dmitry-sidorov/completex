@@ -16,12 +16,4 @@ defmodule CompletexWeb.ChatController do
 
     conn
   end
-
-  def index(_conn, _opts) do
-    CompletexWeb.View.Chat.new("""
-    <h3>Look!</h3>
-
-    <p>I wrote this HTML from <strong>Kino</strong>!</p>
-    """)
-  end
 end
