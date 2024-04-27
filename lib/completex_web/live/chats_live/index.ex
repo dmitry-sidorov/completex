@@ -9,7 +9,6 @@ defmodule CompletexWeb.ChatsLive.Index do
 
   @impl true
   def handle_event("submit", %{"content" => content}, socket) do
-    IO.inspect(content, label: "SUBMIT BUTTON PRESSED")
     pid = self()
 
     socket =
@@ -34,7 +33,6 @@ defmodule CompletexWeb.ChatsLive.Index do
 
   @impl true
   def handle_async(:chat_completion, result, socket) do
-    IO.inspect(result, label: "RUN :chat_completion clause")
     {:noreply, assign(socket, :running, false)}
   end
 
@@ -47,7 +45,7 @@ defmodule CompletexWeb.ChatsLive.Index do
         callback: fn chunk ->
           case chunk do
             [results: [%{text: content, token_summary: _}]] ->
-              send(pid, {:chunk, content}) |> dbg()
+              send(pid, {:chunk, content})
 
             _ ->
               nil
