@@ -1,15 +1,15 @@
-<div class="h-full w-full max-w-3xl flex flex-col mx-auto bg-gray-50 drop-shadow text-gray-700">
+<div class="h-full w-full max-w-3xl flex flex-col mx-auto bg-stone-50 drop-shadow text-stone-700">
   <ol class="grow flex flex-col overflow-y-auto">
     <li class="font-bold">Text to translate:</li>
     <li><%= @message_to_translate %></li>
   </ol>
+  <br />
   <ol class="grow flex flex-col overflow-y-auto">
     <li class="font-bold">Translate result:</li>
-    <%!-- TODO: fix spinner --%>
-    <div :if={false} role="status">
+    <div :if={@running} role="status">
       <svg
         aria-hidden="true"
-        class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        class="w-8 h-8 text-stone-200 animate-spin dark:text-stone-600 fill-blue-600"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -25,21 +25,29 @@
       </svg>
       <span class="sr-only">Loading...</span>
     </div>
-    <li><%= unless false, do: @translated_message %></li>
+    <li><%= unless @running, do: @translated_message %></li>
   </ol>
+  <br />
   <div class="shrink-0 w-full">
-    <form phx-submit="submit" class="border-t border-gray-200 p-4 space-y-2">
+    <form phx-submit="submit" class="border-t border-stone-200 p-4 space-y-2">
       <textarea
         name="content"
-        class="block resize-none w-full border-gray-200 rounded bg-white focus:ring-0 focus:border-gray-300 focus:shadow-sm"
+        class="block resize-none w-full border-stone-200 rounded bg-white focus:ring-0 focus:border-stone-300 focus:shadow-sm"
         placeholder="Enter a message..."
         rows={4}
       >
       </textarea>
-      <div class="flex justify-end">
+      <div class="flex justify-end gap-2">
+        <button
+          phx-click="clear"
+          type="button"
+          class="bg-red-200 hover:bg-red-300 transition px-3 py-1.5 rounded flex items-center justify-center"
+        >
+          Clear
+        </button>
         <button
           type="submit"
-          class="bg-gray-200 hover:bg-gray-300 transition px-3 py-1.5 rounded flex items-center justify-center"
+          class="bg-blue-200 hover:bg-blue-300 transition px-3 py-1.5 rounded flex items-center justify-center"
         >
           Send
         </button>

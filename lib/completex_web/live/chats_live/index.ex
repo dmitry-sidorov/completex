@@ -4,13 +4,7 @@ defmodule CompletexWeb.ChatsLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:message_to_translate, nil)
-      |> assign(:translated_message, nil)
-      |> assign(:running, false)
-
-    {:ok, socket}
+    {:ok, clear_state(socket)}
   end
 
   @impl true
@@ -29,6 +23,10 @@ defmodule CompletexWeb.ChatsLive.Index do
     {:noreply, socket}
   end
 
+  def handle_event("clear", _payload, socket) do
+    {:noreply, clear_state(socket)}
+  end
+
   @impl true
   def handle_info({:chunk, chunk}, socket) do
     {:noreply, assign(socket, :translated_message, chunk)}
@@ -37,11 +35,7 @@ defmodule CompletexWeb.ChatsLive.Index do
   @impl true
   def handle_async(:chat_completion, result, socket) do
     IO.inspect(result, label: "RUN :chat_completion clause")
-    {:noreply, assign(socket, :runnning, false)}
-  end
-
-  def handle_info({:end_running, message}, _from, state) do
-    {:reply, message, state}
+    {:noreply, assign(socket, :running, false)}
   end
 
   defp run_chat_completion(pid, message_to_translate) do
@@ -62,5 +56,12 @@ defmodule CompletexWeb.ChatsLive.Index do
       )
 
     result
+  end
+
+  defp clear_state(socket) do
+    socket
+    |> assign(:message_to_translate, nil)
+    |> assign(:translated_message, nil)
+    |> assign(:running, false)
   end
 end

@@ -13,9 +13,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        brand: "#FD4F00",
-      }
+      color: 'green',
     },
   },
   plugins: [
