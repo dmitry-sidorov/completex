@@ -11,14 +11,15 @@
 #   - https://pkgs.org/ - resource for finding needed packages
 #   - Ex: hexpm/elixir:1.16.2-erlang-26.0.2-debian-bullseye-20240423-slim
 #
-ARG ELIXIR_VERSION=1.16.2
-ARG OTP_VERSION=25.3.2.11
-ARG DEBIAN_VERSION=3.16.9
+# ARG ELIXIR_VERSION=1.16.2
+# ARG OTP_VERSION=26.0.2
+# ARG DEBIAN_VERSION=26.0.2-debian-bullseye-20240423-slim
 
-ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
-ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
+# ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
+FROM elixir:1.16.0 as builder
+# ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 
-FROM ${BUILDER_IMAGE} as builder
+# FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git \
@@ -65,7 +66,8 @@ RUN mix release
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
-FROM ${RUNNER_IMAGE}
+# FROM ${RUNNER_IMAGE}
+FROM builder as runner
 
 RUN apt-get update -y && \
   apt-get install -y libstdc++6 openssl libncurses5 locales ca-certificates \
@@ -89,9 +91,11 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/completex ./
 
 USER nobody
 
+EXPOSE 9009
+
 # If using an environment that doesn't automatically reap zombie processes, it is
 # advised to add an init process such as tini via `apt-get install`
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
-CMD ["/app/bin/server"]
+CMD ["server"]
