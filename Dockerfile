@@ -85,6 +85,7 @@ RUN chown nobody /app
 
 # set runner ENV
 ENV MIX_ENV="prod"
+ENV BUMBLEBEE_CACHE_DIR=/app/.bumblebee
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/completex ./
@@ -98,4 +99,5 @@ EXPOSE 9009
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
-CMD ["server"]
+# CMD ["/app/bin/server"]
+ENTRYPOINT ["/app/bin/server", "start"]

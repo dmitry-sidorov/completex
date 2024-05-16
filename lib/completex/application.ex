@@ -11,7 +11,7 @@ defmodule Completex.Application do
       # Start the Telemetry supervisor
       CompletexWeb.Telemetry,
       # Start the Ecto repository
-      Completex.Repo,
+      # Completex.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Completex.PubSub},
       # Start Finch
