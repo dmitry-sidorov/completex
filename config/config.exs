@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config(:nx, default_backend: EXLA.Backend)
+
 config :completex,
   ecto_repos: [Completex.Repo]
 
